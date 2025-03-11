@@ -17,6 +17,37 @@ class DigitalTwin:
         self.ser = None
         self.device_connected = False
 
+###
+        self.screen = None
+        self.x_pivot_limit = 100
+        self.integral_error = 0.0
+        # Initialize serial communication parameters
+        self.ser = None
+        self.device_connected = False
+        # State configuration parameters
+        self.steps = 0
+        self.theta = 0.#np.pi-0.01
+        self.theta_dot = 0.
+        self.theta_double_dot = 0.
+        self.x_pivot = 0
+        self.delta_t = 0.005  # Example value, adjust as needed in seconds
+        # Model parameters
+        self.g = 9.81  # Acceleration due to gravity (m/s^2)
+        self.l = 0.8   # Length of the pendulum (m)
+        self.c_air = 0.1  # Air friction coefficient (Matches damping B from paper)
+        self.c_c = 0.006  # Coulomb friction coefficient (Matches Tq from paper)
+        self.a_m = 2000  # Reduced from 2000 to more realistic value
+        self.future_motor_accelerations = []
+        self.future_motor_positions = []
+        self.currentmotor_acceleration = 0.
+        self.time = 0.
+        # Sensor data
+        self.sensor_theta = 0
+        self.current_sensor_motor_position = 0.
+        self.current_action = 0
+
+###
+
         # State configuration parameters
         self.steps = 0
         self.theta = 0.     #np.pi-0.01
@@ -26,9 +57,10 @@ class DigitalTwin:
         self.delta_t = 0.005  # Example value, adjust as needed in seconds
         
         # Model parameters
+        self.m = 1         # Mass of the pend
         self.g = 9.8065     # Acceleration due to gravity (m/s^2)
-        self.l = 0.8        # Length of the pendulum (m)
-        self.c_air = 0.5    # Air friction coefficient
+        self.l = 0.3        # Length of the pendulum (m)
+        self.c_air = 0.2    # Air friction coefficient
         self.c_c = 1.1      # Coulomb friction coefficient
         self.a_m = 2000     # Motor acceleration force tranfer coefficient
         self.future_motor_accelerations = []
@@ -145,13 +177,13 @@ class DigitalTwin:
         t1 = duration/4
         t2_d = duration/4
         t2 = duration - t2_d
-        for t in np.arange(0.0, duration+self.delta_t, self.delta_t):
+        for t in np.arange(0.0, duration + self.delta_t, self.delta_t):
             if t <= t1:
-                c = -4*direction*a_m_1/(t1*t1) * t * (t-t1)
+                c = -4 * direction * a_m_1/(t1 * t1) * t * (t-t1)
             elif t < t2 and t > t1:
                 c = 0 
             elif t >= t2:
-                c = 4*direction*a_m_2/(t2_d*t2_d) * (t-t2) * (t-duration)
+                c = 4 * direction * a_m_2 /(t2_d * t2_d) * (t-t2) * (t-duration)
             
             self.future_motor_accelerations.append(c)
         
@@ -164,8 +196,21 @@ class DigitalTwin:
         as a function of theta, theta_dot and the self.currentmotor_acceleration. 
         You should include the following constants as well: c_air, c_c, a_m, l and g. 
         """
-        # Implement your model here.
-        return None
+
+        theta_double_dot =  - (1 / self.l ) * self.currentmotor_acceleration * self.a_m * math.cos(theta) \
+                            - (self.c_c / self.l ** 2) * (theta_dot) \
+                            - (self.g / self.l) * np.sin(theta) \
+                            - (self.c_air / self.m * self.l ** 2) * theta_dot
+
+        # theta_double_dot = - self.g / self.l * np.sin(theta) \
+        #                     - self.a_m / self.l * self.currentmotor_acceleration \
+        #                     - self.c_air / self.l * theta_dot
+        # Calculate angular acceleration using the equation of motion
+        # theta_double_dot = (-self.g / self.l) * np.sin(theta) \
+        #                - (self.c_air / (self.l ** 2)) * theta_dot \
+        #                - (self.c_c / (self.l ** 2)) * np.sign(theta_dot) \
+        #                + (self.a_m / (self.l ** 2)) * self.currentmotor_acceleration
+        return theta_double_dot
 
     def step(self):
         # Get the predicted motor acceleration for the next step and the shift in x_pivot
