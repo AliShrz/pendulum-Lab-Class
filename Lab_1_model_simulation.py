@@ -21,5 +21,5 @@ if __name__=='__main__':
                     if event.key in digital_twin.actions:
                         direction, duration = digital_twin.actions[event.key]
                         digital_twin.perform_action(direction, duration)
-
+            
         pygame.quit()

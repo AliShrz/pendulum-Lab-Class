@@ -18,33 +18,9 @@ class DigitalTwin:
         self.device_connected = False
 
 ###
-        self.screen = None
+
         self.x_pivot_limit = 100
         self.integral_error = 0.0
-        # Initialize serial communication parameters
-        self.ser = None
-        self.device_connected = False
-        # State configuration parameters
-        self.steps = 0
-        self.theta = 0.#np.pi-0.01
-        self.theta_dot = 0.
-        self.theta_double_dot = 0.
-        self.x_pivot = 0
-        self.delta_t = 0.005  # Example value, adjust as needed in seconds
-        # Model parameters
-        self.g = 9.81  # Acceleration due to gravity (m/s^2)
-        self.l = 0.8   # Length of the pendulum (m)
-        self.c_air = 0.1  # Air friction coefficient (Matches damping B from paper)
-        self.c_c = 0.006  # Coulomb friction coefficient (Matches Tq from paper)
-        self.a_m = 2000  # Reduced from 2000 to more realistic value
-        self.future_motor_accelerations = []
-        self.future_motor_positions = []
-        self.currentmotor_acceleration = 0.
-        self.time = 0.
-        # Sensor data
-        self.sensor_theta = 0
-        self.current_sensor_motor_position = 0.
-        self.current_action = 0
 
 ###
 
@@ -57,11 +33,11 @@ class DigitalTwin:
         self.delta_t = 0.005  # Example value, adjust as needed in seconds
         
         # Model parameters
-        self.m = 1         # Mass of the pend
+        self.m = 0.5         # Mass of the pendulum (kg)
         self.g = 9.8065     # Acceleration due to gravity (m/s^2)
         self.l = 0.3        # Length of the pendulum (m)
-        self.c_air = 0.2    # Air friction coefficient
-        self.c_c = 1.1      # Coulomb friction coefficient
+        self.c_air = 0.02    # Air friction coefficient
+        self.c_c = 0.2      # Coulomb friction coefficient
         self.a_m = 2000     # Motor acceleration force tranfer coefficient
         self.future_motor_accelerations = []
         self.future_motor_positions = []
