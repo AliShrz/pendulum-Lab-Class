@@ -31,13 +31,14 @@ class DigitalTwin:
         self.theta_double_dot = 0.
         self.x_pivot = 0
         self.delta_t = 0.005  # Example value, adjust as needed in seconds
-        
+        self.j_fric = 0.3
+
         # Model parameters
-        self.m = 0.5         # Mass of the pendulum (kg)
+        self.m = 1         # Mass of the pendulum (kg)
         self.g = 9.8065     # Acceleration due to gravity (m/s^2)
-        self.l = 0.3        # Length of the pendulum (m)
+        self.l = 0.8       # Length of the pendulum (m)
         self.c_air = 0.02    # Air friction coefficient
-        self.c_c = 0.2      # Coulomb friction coefficient
+        self.c_c = 0.1      # Coulomb friction coefficient
         self.a_m = 2000     # Motor acceleration force tranfer coefficient
         self.future_motor_accelerations = []
         self.future_motor_positions = []
@@ -174,10 +175,10 @@ class DigitalTwin:
         """
 
         theta_double_dot =  - (1 / self.l ) * self.currentmotor_acceleration * self.a_m * math.cos(theta) \
-                            - (self.c_c / self.l ** 2) * (theta_dot) \
                             - (self.g / self.l) * np.sin(theta) \
-                            - (self.c_air / self.m * self.l ** 2) * theta_dot
-
+                            - (self.c_air) * theta_dot \
+                            - (self.j_fric) * theta_dot
+                            # - (self.c_c / self.m * self.l ** 2) * (theta_dot) \
         # theta_double_dot = - self.g / self.l * np.sin(theta) \
         #                     - self.a_m / self.l * self.currentmotor_acceleration \
         #                     - self.c_air / self.l * theta_dot
