@@ -42,7 +42,7 @@ void setup()
   Wire.write((byte)0x00);
   // Stop I2C Transmission
   Wire.endTransmission();
- 
+
   // Start I2C Transmission
   Wire.beginTransmission(Addr);
   // Select control register
@@ -51,7 +51,7 @@ void setup()
   Wire.write(0x01);
   // Stop I2C Transmission
   Wire.endTransmission();
- 
+
   // Start I2C Transmission
   Wire.beginTransmission(Addr);
   // Select control register
@@ -65,7 +65,7 @@ void setup()
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
 }
- 
+
 void loop()
 {
   
@@ -91,7 +91,7 @@ void loop()
         //Serial.println(movement);
         }
         }
-       else if((data_stream)){
+      else if((data_stream)){
             //Serial.print("test: ");
             //Serial.println(movement*sign);
             data_stream = false;
@@ -101,15 +101,15 @@ void loop()
               else{
             movemotor(LOW,HIGH,movement);}
         }
-         
+        
         
       
   
   unsigned int data[7];
- 
+
   // Request 7 bytes of data
   Wire.requestFrom(Addr, 7);
- 
+
   // Read 7 bytes of data
   // staus, xAccl lsb, xAccl msb, yAccl lsb, yAccl msb, zAccl lsb, zAccl msb
   if(Wire.available() == 7) 
@@ -122,20 +122,20 @@ void loop()
     data[5] = Wire.read();
     data[6] = Wire.read();
   }
- 
+
   // Convert the data to 12-bits
   int xAccl = ((data[1] * 256) + data[2]) / 16;
   if (xAccl > 2047)
   {
     xAccl -= 4096;
   }
- 
+
   int yAccl = ((data[3] * 256) + data[4]) / 16;
   if (yAccl > 2047)
   {
     yAccl -= 4096;
   }
- 
+
   int zAccl = ((data[5] * 256) + data[6]) / 16;
   if (zAccl > 2047)
   {
