@@ -44,6 +44,21 @@ buffer = np.zeros(kernel_size)  # Initialize buffer with zeros
 kalman_filter_theta = KalmanFilter(process_variance=1e-5, measurement_variance=1e-5, estimated_measurement_variance=1e-5)
         
 if __name__=='__main__':
+        
+        # Start recording first
+        digital_twin.start_recording("test_data")
+
+        # Simulate data collection for 10 seconds (adjust as needed)
+        print("Recording data...")
+        for _ in range(1000):  # 1000 iterations, assuming each step is ~10ms
+            digital_twin.read_data()  # Reads sensor data and writes to CSV
+            time.sleep(0.01)  # Sleep for 10ms
+
+        # Stop recording
+        digital_twin.stop_recording()
+        print("Recording finished.")
+
+        
         digital_twin.load_recording("test_data")
         
         for i in range(len(digital_twin.df)-1):
