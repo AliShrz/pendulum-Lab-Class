@@ -45,8 +45,16 @@ kalman_filter_theta = KalmanFilter(process_variance=1e-5, measurement_variance=1
         
 if __name__=='__main__':
         
+    file = open("Lab 2/test_data.csv", "r")
+    if file is not None:
+        line = file.readline()
+        print(line)
+        file.close()
+    else:
+        print("Failed to open file.")
+
         # Start recording first
-        digital_twin.start_recording("test_data")
+        digital_twin.start_recording("Lab 2/test_data.csv")
 
         # Simulate data collection for 10 seconds (adjust as needed)
         print("Recording data...")
@@ -59,7 +67,7 @@ if __name__=='__main__':
         print("Recording finished.")
 
         
-        digital_twin.load_recording("test_data")
+        digital_twin.load_recording("Lab 2/test_data.csv")
         
         for i in range(len(digital_twin.df)-1):
             #replay the recording:

@@ -13,7 +13,7 @@ if __name__=='__main__':
         # Can also use your keyboard to manually control the system.
         actions =  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         digital_twin.connect_device()
-        digital_twin.start_recording("test_data")
+        digital_twin.start_recording("Lab 2/test_data")
         while running:
             # Perform action after 200ms > one step in the dt simulation is delta_t,  
             # in this case 0.005 seconds or 5ms.

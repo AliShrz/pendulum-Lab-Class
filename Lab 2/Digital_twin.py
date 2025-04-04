@@ -74,7 +74,7 @@ class DigitalTwin:
         pygame.init()
         self.screen = pygame.display.set_mode([1000, 800])
 
-    def connect_device(self, port='COM3', baudrate=115200):
+    def connect_device(self, port='/dev/tty.SLAB_USBtoUART', baudrate=115200):
         # Establish a serial connection for sensor data
         self.ser = serial.Serial(port=port, baudrate=baudrate, timeout=0, writeTimeout=0)
         self.device_connected = True
@@ -82,7 +82,7 @@ class DigitalTwin:
 
     def read_data(self):
         line = self.ser.readline()
-        line = line.decode("utf-8")
+        line = line.decode("ISO-8859-1")
         try:
             if len(line) > 2 and line != '-':
                 sensor_data = line.split(",")
